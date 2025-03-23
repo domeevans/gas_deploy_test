@@ -1,10 +1,10 @@
-name: Deploy Apps Script (Dev & Prod)
+name: Deploy Apps Script (Dev & main)
 
 on:
   push:
     branches:
       - dev
-      - prod
+      - main
 
 jobs:
   deploy-dev:
@@ -36,8 +36,8 @@ jobs:
       - name: Deploy to Dev
         run: clasp push --force
 
-  deploy-prod:
-    if: github.ref == 'refs/heads/prod'
+  deploy-main:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -58,14 +58,14 @@ jobs:
           echo "$CLASPRC" | base64 --decode > ~/.clasprc.json
           chmod 600 ~/.clasprc.json
 
-      - name: Copy correct clasp config for Prod
+      - name: Copy correct clasp config for main
         run: |
-          cp src/.clasp.prod.json .clasp.json
+          cp src/.clasp.main.json .clasp.json
 
-      - name: Deploy to Prod
+      - name: Deploy to main
         run: clasp push --force
 
-      - name: Version & Deploy Prod Release
+      - name: Version & Deploy main Release
         run: |
-          clasp version "Prod release - ${{ github.sha }}"
+          clasp version "main release - ${{ github.sha }}"
           clasp deploy
