@@ -55,3 +55,4 @@ jobs:
           cd apps-script/src
           clasp version "Prod release - ${{ github.sha }}"
           clasp deploy
+          
