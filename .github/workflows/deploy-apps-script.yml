@@ -7,22 +7,9 @@ on:
       - prod
 
 jobs:
-  deploy:
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - branch: dev
-            clasp_file: .clasp.dev.json
-            environment: Dev
-          - branch: prod
-            clasp_file: .clasp.prod.json
-            environment: Prod
-
-
-    if: ${{ matrix.branch == github.ref_name }}
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -41,17 +28,46 @@ jobs:
         run: |
           echo "$CLASPRC" | base64 --decode > ~/.clasprc.json
 
-      - name: Copy correct clasp config for ${{ matrix.environment }}
+      - name: Copy correct clasp config for Dev
         run: |
-          cp apps-script/src/${{ matrix.clasp_file }} apps-script/src/.clasp.json
+          cp apps-script/src/.clasp.dev.json apps-script/src/.clasp.json
 
-      - name: Deploy to ${{ matrix.environment }}
+      - name: Deploy to Dev
         run: |
           cd apps-script/src
           clasp push --force
 
-      - name: Version & Deploy Prod Release (only for prod)
-        if: matrix.branch == 'prod'
+  deploy-prod:
+    if: github.ref == 'refs/heads/prod'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install clasp globally
+        run: npm install -g @google/clasp
+
+      - name: Authenticate clasp
+        env:
+          CLASPRC: ${{ secrets.CLASPRC_JSON }}
+        run: |
+          echo "$CLASPRC" | base64 --decode > ~/.clasprc.json
+
+      - name: Copy correct clasp config for Prod
+        run: |
+          cp apps-script/src/.clasp.prod.json apps-script/src/.clasp.json
+
+      - name: Deploy to Prod
+        run: |
+          cd apps-script/src
+          clasp push --force
+
+      - name: Version & Deploy Prod Release
         run: |
           cd apps-script/src
           clasp version "Prod release - ${{ github.sha }}"
