@@ -1,20 +1,12 @@
-name: Deploy Apps Script
-
-on:
-  push:
-    branches:
-      - dev
-      - main
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         environment: [dev, main]
-        
-    if: ${{ github.ref == 'refs/heads/' + matrix.environment }}
+
+    if: ${{ (github.ref == 'refs/heads/dev' && matrix.environment == 'dev') || (github.ref == 'refs/heads/main' && matrix.environment == 'main') }}
 
     steps:
       - name: Checkout repo
