@@ -30,11 +30,11 @@ jobs:
 
       - name: Copy correct clasp config for Dev
         run: |
-          cp gas_deploy_test/src/.clasp.dev.json gas_deploy_test/src/.clasp.json
+          cp src/.clasp.dev.json src/.clasp.json
 
       - name: Deploy to Dev
         run: |
-          cd gas_deploy_test/src
+          cd src
           clasp push --force
 
   deploy-prod:
@@ -60,15 +60,15 @@ jobs:
 
       - name: Copy correct clasp config for Prod
         run: |
-          cp gas_deploy_test/src/.clasp.prod.json gas_deploy_test/src/.clasp.json
+          cp src/.clasp.prod.json src/.clasp.json
 
       - name: Deploy to Prod
         run: |
-          cd gas_deploy_test/src
+          cd src
           clasp push --force
 
       - name: Version & Deploy Prod Release
         run: |
-          cd gas_deploy_test/src
+          cd src
           clasp version "Prod release - ${{ github.sha }}"
           clasp deploy
