@@ -27,6 +27,15 @@ jobs:
           CLASPRC: ${{ secrets.CLASPRC_JSON }}
         run: |
           echo "$CLASPRC" | base64 --decode > ~/.clasprc.json
+          # Ensure the file has the correct permissions
+          chmod 600 ~/.clasprc.json
+          # Display a sanitized version to check format (hide sensitive data)
+          grep -v "token\|api_key" ~/.clasprc.json || echo "Failed to create clasprc file"
+
+      - name: Debug - List files
+        run: |
+          ls -la src/
+          ls -la src/.clasp* || echo "No .clasp files found in src"
 
       - name: Copy correct clasp config for Dev
         run: |
@@ -34,6 +43,7 @@ jobs:
 
       - name: Deploy to Dev
         run: |
+          # Execute clasp commands in the src directory while using the global auth
           cd src
           clasp push --force
 
@@ -57,6 +67,15 @@ jobs:
           CLASPRC: ${{ secrets.CLASPRC_JSON }}
         run: |
           echo "$CLASPRC" | base64 --decode > ~/.clasprc.json
+          # Ensure the file has the correct permissions
+          chmod 600 ~/.clasprc.json
+          # Display a sanitized version to check format (hide sensitive data)
+          grep -v "token\|api_key" ~/.clasprc.json || echo "Failed to create clasprc file"
+
+      - name: Debug - List files
+        run: |
+          ls -la src/
+          ls -la src/.clasp* || echo "No .clasp files found in src"
 
       - name: Copy correct clasp config for Prod
         run: |
