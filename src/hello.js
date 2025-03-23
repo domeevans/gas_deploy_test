@@ -1,3 +1,3 @@
 function hello() {
-    Logger.log("Hello from unified codebase - Environment-agnostic");
+    Logger.log("Hello World");
 }
