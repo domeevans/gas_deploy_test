@@ -1,13 +1,15 @@
+name: Deploy Apps Script (Dev & main)
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
 jobs:
-  deploy:
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        environment: [dev, main]
-
-    if: ${{ (github.ref == 'refs/heads/dev' && matrix.environment == 'dev') || (github.ref == 'refs/heads/main' && matrix.environment == 'main') }}
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -27,15 +29,43 @@ jobs:
           echo "$CLASPRC" | base64 --decode > ~/.clasprc.json
           chmod 600 ~/.clasprc.json
 
-      - name: Copy correct clasp config
+      - name: Copy correct clasp config for Dev
         run: |
-          cp src/.clasp.${{ matrix.environment }}.json .clasp.json
+          cp src/.clasp.dev.json .clasp.json
 
-      - name: Deploy
+      - name: Deploy to Dev
+        run: clasp push --force
+
+  deploy-main:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install clasp globally
+        run: npm install -g @google/clasp
+
+      - name: Authenticate clasp
+        env:
+          CLASPRC: ${{ secrets.CLASPRC_JSON }}
+        run: |
+          echo "$CLASPRC" | base64 --decode > ~/.clasprc.json
+          chmod 600 ~/.clasprc.json
+
+      - name: Copy correct clasp config for main
+        run: |
+          cp src/.clasp.main.json .clasp.json
+
+      - name: Deploy to main
         run: clasp push --force
 
       - name: Version & Deploy main Release
-        if: ${{ matrix.environment == 'main' }}
         run: |
           clasp version "main release - ${{ github.sha }}"
           clasp deploy
