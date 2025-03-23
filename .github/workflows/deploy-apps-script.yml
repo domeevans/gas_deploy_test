@@ -20,7 +20,7 @@ jobs:
             clasp_file: .clasp.prod.json
             environment: Prod
 
-    if: github.ref == 'refs/heads/' + matrix.branch
+    if: github.ref == format('refs/heads/{0}', matrix.branch)
 
     steps:
       - name: Checkout repo
