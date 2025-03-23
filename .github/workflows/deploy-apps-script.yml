@@ -20,7 +20,8 @@ jobs:
             clasp_file: .clasp.prod.json
             environment: Prod
 
-    if: github.ref == format('refs/heads/{0}', matrix.branch)
+
+    if: ${{ contains(matrix.branch, github.ref_name) }}
 
     steps:
       - name: Checkout repo
@@ -55,4 +56,3 @@ jobs:
           cd apps-script/src
           clasp version "Prod release - ${{ github.sha }}"
           clasp deploy
-          
