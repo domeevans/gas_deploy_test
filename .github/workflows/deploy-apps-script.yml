@@ -21,7 +21,7 @@ jobs:
             environment: Prod
 
 
-    if: ${{ contains(matrix.branch, github.ref_name) }}
+    if: ${{ matrix.branch == github.ref_name }}
 
     steps:
       - name: Checkout repo
