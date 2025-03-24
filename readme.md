@@ -1,4 +1,4 @@
-# Bew Prod and Dev deployments of Appsscript projects
+# Prod and Dev deployments of Appsscript projects
 
 This repository demonstrates how to set up automatic deployments of Google Apps Script projects to different environments (Development and Production) using GitHub Actions.
 
