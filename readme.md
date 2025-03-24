@@ -15,21 +15,16 @@ This project uses [clasp](https://github.com/google/clasp) to manage Google Apps
 - Google account with Apps Script API enabled
 - GitHub account
 
-### Local Development Setup
+### Local Development SetupClone this repository
 
-1. Clone this repository
-2. Authenticate with clasp:
+1. Authenticate with clasp:
 
    ```
    clasp login
    ```
-3. For development work:
+2. Manualy create the clasp files for the main and dev projects.
 
-   ```
-   cp src/.clasp.dev.json
-   ```
-
-   This file must be manualy created with the format:
+   `src/.clasp.dev.json` with the format:
 
    ```
    {
@@ -37,14 +32,10 @@ This project uses [clasp](https://github.com/google/clasp) to manage Google Apps
        "rootDir": "./src"
    }
    ```
-4. For production work:
+
+   `src/.clasp.dev.json` with the format:
 
    ```
-   cp src/.clasp.main.json
-   ```
-
-   This file must be manualy created with the format:
-5. ```
    {
        "scriptId": "PROD_APPSSCRIPT_PROJECT_ID",
        "rootDir": "./src"
